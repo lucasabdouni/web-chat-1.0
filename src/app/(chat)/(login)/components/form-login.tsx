@@ -5,8 +5,10 @@ import InputPassword from '@/app/components/inputPassword'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AlertCircle, LogIn, UserRoundPlus } from 'lucide-react'
 import Link from 'next/link'
+import { useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { AuthContext } from '@/context/AuthContext'
 
 const registerFormSchema = z.object({
   email: z.string().email(),
@@ -16,6 +18,8 @@ const registerFormSchema = z.object({
 type RegisterFormData = z.infer<typeof registerFormSchema>
 
 export default function FormLogin() {
+  const { signIn } = useContext(AuthContext)
+
   const {
     register,
     handleSubmit,
@@ -25,8 +29,7 @@ export default function FormLogin() {
   })
 
   async function handleRegister(data: RegisterFormData) {
-    console.log('Dados do form:')
-    console.log(data)
+    await signIn(data)
   }
 
   return (

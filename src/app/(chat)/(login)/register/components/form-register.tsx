@@ -2,7 +2,7 @@
 
 import Input from '@/app/components/input'
 import InputPassword from '@/app/components/inputPassword'
-import { api } from '@/lib/axios'
+import { api } from '@/services/axios'
 import { zodResolver } from '@hookform/resolvers/zod'
 import axios from 'axios'
 import { AlertCircle, Send, UserRoundPlus } from 'lucide-react'
@@ -50,7 +50,6 @@ export default function FormLogin() {
       console.error('Erro na chamada da API:', err)
 
       if (axios.isAxiosError(err)) {
-        console.log(err)
         if (err.response?.status === 409) {
           setErrorMessage('E-mail já cadastrado.')
         } else {
