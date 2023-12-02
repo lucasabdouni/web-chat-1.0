@@ -1,11 +1,12 @@
 'use client'
 
 import Input from '@/app/components/input'
+import ErrorMessage from '@/app/components/errorMessage'
 import InputPassword from '@/app/components/inputPassword'
 import { api } from '@/services/axios'
 import { zodResolver } from '@hookform/resolvers/zod'
 import axios from 'axios'
-import { AlertCircle, Send, UserRoundPlus } from 'lucide-react'
+import { Send, UserRoundPlus } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -32,7 +33,7 @@ export default function FormLogin() {
   })
 
   const router = useRouter()
-  const [errorMessage, setErrorMessage] = useState('')
+  const [messageError, setMessageError] = useState('')
 
   async function handleRegister(data: RegisterFormData) {
     const { name, email, password } = data
@@ -51,9 +52,9 @@ export default function FormLogin() {
 
       if (axios.isAxiosError(err)) {
         if (err.response?.status === 409) {
-          setErrorMessage('E-mail já cadastrado.')
+          setMessageError('E-mail já cadastrado.')
         } else {
-          setErrorMessage(
+          setMessageError(
             'Ocorreu um erro ao registrar. Por favor, tente novamente.',
           )
         }
@@ -78,30 +79,23 @@ export default function FormLogin() {
         {...register('password')}
       />
 
-      {errorMessage !== '' ? (
+      {messageError ? (
         <p className="w-80 flex justify-center items-center gap-2 p-2 bg-rose-500 text-sm">
-          <AlertCircle />
-          {errorMessage}
+          <ErrorMessage message={messageError} />
         </p>
       ) : (
         ''
       )}
 
       {errors.email || errors.password || errors.name ? (
-        <p className="w-80 flex justify-center items-center gap-2 p-2 bg-rose-500 text-sm">
-          <AlertCircle />
-          Verifique os dados inseridos.
-        </p>
+        <ErrorMessage message="Verifique os dados" />
       ) : (
         ''
       )}
 
       {errors.password &&
       errors.password?.message !== 'A senha deve ter no mínimo 6 caracteres' ? (
-        <p className="w-80 flex justify-center items-center gap-2 p-2 bg-rose-500 text-sm">
-          <AlertCircle />
-          {errors.password.message}
-        </p>
+        <ErrorMessage message={errors.password.message} />
       ) : (
         ''
       )}
