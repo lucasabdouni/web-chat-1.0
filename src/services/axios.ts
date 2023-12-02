@@ -83,16 +83,17 @@ api.interceptors.response.use(
               resolve(api(originalConfig))
             },
             onFailure: (err: AxiosError) => {
+              console.log('rejeitou')
               reject(err)
             },
           })
         })
-      }
-    } else {
-      destroyCookie(undefined, 'chat.token')
-      destroyCookie(undefined, 'chat.refreshToken')
+      } else {
+        destroyCookie(undefined, 'chat.token')
+        destroyCookie(undefined, 'chat.refreshToken')
 
-      redirect('/')
+        redirect('/')
+      }
     }
 
     return Promise.reject(error)
