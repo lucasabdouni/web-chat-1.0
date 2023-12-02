@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import Spin from '@/app/components/spin'
 
 const registerFormSchema = z.object({
   name: z.string(),
@@ -48,8 +49,6 @@ export default function FormLogin() {
         router.push('/')
       }
     } catch (err) {
-      console.error('Erro na chamada da API:', err)
-
       if (axios.isAxiosError(err)) {
         if (err.response?.status === 409) {
           setMessageError('E-mail já cadastrado.')
@@ -79,13 +78,7 @@ export default function FormLogin() {
         {...register('password')}
       />
 
-      {messageError ? (
-        <p className="w-80 flex justify-center items-center gap-2 p-2 bg-rose-500 text-sm">
-          <ErrorMessage message={messageError} />
-        </p>
-      ) : (
-        ''
-      )}
+      {messageError ? <ErrorMessage message={messageError} /> : ''}
 
       {errors.email || errors.password || errors.name ? (
         <ErrorMessage message="Verifique os dados" />
@@ -101,12 +94,14 @@ export default function FormLogin() {
       )}
 
       <button
-        className="mt-7 p-2 flex justify-center gap-2 bg-emerald-800 hover:bg-emerald-900 hover:ease-linear"
+        className="mt-7 p-2 flex justify-center gap-2 bg-emerald-800 hover:bg-emerald-900 hover:ease-linear disabled:bg-emerald-400"
         type="submit"
         disabled={isSubmitting}
       >
-        <Send /> Cadastrar
+        {isSubmitting ? <Spin /> : <Send />}
+        Entrar
       </button>
+
       <Link
         href="/"
         className="p-2 flex justify-center items-center border-[1px] border-emerald-800 gap-2 text-sm text-emerald-800"
