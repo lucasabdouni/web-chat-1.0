@@ -1,6 +1,7 @@
 'use client'
 
 import { api } from '@/services/axios'
+import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { destroyCookie, parseCookies, setCookie } from 'nookies'
 import { ReactNode, createContext, useEffect, useState } from 'react'
@@ -17,7 +18,8 @@ interface SignInCredentials {
 }
 
 interface AuthContextData {
-  signIn: (credentials: SignInCredentials) => Promise<void>
+  signIn: (credentials: SignInCredentials) => Promise<void | string>
+  signOut: () => Promise<void>
   user: User
   isAuthenticated: boolean
 }
@@ -39,11 +41,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     if (token) {
       api
         .get('/me')
-        .then((res) => {
-          console.log(res.data)
+        .then((response) => {
+          setUser(response.data.user)
         })
         .catch(() => {
-          console.log('ve se caiu em errror')
           destroyCookie(undefined, 'chat.token')
           destroyCookie(undefined, 'chat.refreshToken')
 
@@ -52,7 +53,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }, [])
 
-  async function signIn({ email, password }: SignInCredentials) {
+  async function signIn({
+    email,
+    password,
+  }: SignInCredentials): Promise<string | undefined> {
     try {
       const response = await api.post('/sessions', {
         email,
@@ -78,13 +82,33 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setUser(responseGetUser.data)
 
       router.push('/home')
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        if (
+          err.response?.status === 400 &&
+          err.response?.data.message === 'Invalid Credential.'
+        ) {
+          return 'Verifique os dados informados.'
+        }
+      } else {
+        return 'Ocorreu um erro. Por favor, tente novamente.'
+      }
+    }
+  }
+
+  async function signOut() {
+    try {
+      destroyCookie(undefined, 'chat.token')
+      destroyCookie(undefined, 'chat.refreshToken')
+
+      router.push('/')
     } catch (error: any) {
       console.log(error)
     }
   }
 
   return (
-    <AuthContext.Provider value={{ user, signIn, isAuthenticated }}>
+    <AuthContext.Provider value={{ user, signIn, isAuthenticated, signOut }}>
       {children}
     </AuthContext.Provider>
   )
