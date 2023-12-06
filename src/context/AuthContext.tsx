@@ -43,6 +43,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
         .get('/me')
         .then((response) => {
           setUser(response.data.user)
+
+          if (user) {
+            router.push('/home')
+          }
         })
         .catch(() => {
           destroyCookie(undefined, 'chat.token')
