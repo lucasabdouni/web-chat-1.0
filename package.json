@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",
+    "@t3-oss/env-nextjs": "^0.7.1",
     "@types/jsonwebtoken": "^9.0.5",
     "axios": "^1.6.2",
     "jsonwebtoken": "^9.0.2",
