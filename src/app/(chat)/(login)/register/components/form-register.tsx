@@ -24,7 +24,7 @@ const registerFormSchema = z.object({
 
 type RegisterFormData = z.infer<typeof registerFormSchema>
 
-export default function FormLogin() {
+export default function FormRegister() {
   const {
     register,
     handleSubmit,
@@ -99,7 +99,7 @@ export default function FormLogin() {
         disabled={isSubmitting}
       >
         {isSubmitting ? <Spin /> : <Send />}
-        Entrar
+        Enviar
       </button>
 
       <Link

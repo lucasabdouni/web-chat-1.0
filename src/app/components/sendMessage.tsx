@@ -6,6 +6,7 @@ import { parseCookies } from 'nookies'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import jwt from 'jsonwebtoken'
+import { env } from '@/env'
 
 const cookies = parseCookies()
 const { 'chat.token': token } = cookies
@@ -24,7 +25,7 @@ const messageFormSchema = z.object({
 })
 
 const socket = new WebSocket(
-  `wss://chat-1-0-api.onrender.com/chat?username=${userId}`,
+  `${env.NEXT_PUBLIC_SOCKET_SECURY}chat?username=${userId}`,
 )
 
 type MessageFormData = z.infer<typeof messageFormSchema>

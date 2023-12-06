@@ -3,6 +3,7 @@
 import { CartMessage } from '@/app/components/cartMessage'
 import SendMessage from '@/app/components/sendMessage'
 import Spin from '@/app/components/spin'
+import { env } from '@/env'
 import { api } from '@/services/axios'
 
 import jwt from 'jsonwebtoken'
@@ -36,7 +37,7 @@ const messagesQueue: Message[] = []
 let isOnlineSocket = false
 
 const socket = new WebSocket(
-  `wss://chat-1-0-api.onrender.com/chat?username=${userId}`,
+  `${env.NEXT_PUBLIC_SOCKET_SECURY}chat?username=${userId}`,
 )
 
 socket.onopen = async () => {
