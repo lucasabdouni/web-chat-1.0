@@ -1,6 +1,7 @@
 import axios, { AxiosError } from 'axios'
 import { destroyCookie, parseCookies, setCookie } from 'nookies'
 import { redirect } from 'next/navigation'
+// import { env } from '@/env'
 
 interface FailedRequest {
   onSuccess: (token: string) => void
@@ -12,7 +13,7 @@ let isRefreshing = false
 let failedRequestsQueue: FailedRequest[] = []
 
 export const api = axios.create({
-  baseURL: 'http://localhost:3333',
+  baseURL: 'https://chat-1-0-api.onrender.com/',
   headers: {
     Authorization: `Bearer ${cookies['chat.token']}`,
   },

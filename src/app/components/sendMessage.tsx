@@ -23,7 +23,9 @@ const messageFormSchema = z.object({
   message: z.string(),
 })
 
-const socket = new WebSocket(`ws://localhost:3333/chat?username=${userId}`)
+const socket = new WebSocket(
+  `wss://chat-1-0-api.onrender.com/chat?username=${userId}`,
+)
 
 type MessageFormData = z.infer<typeof messageFormSchema>
 

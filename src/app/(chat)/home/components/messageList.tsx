@@ -2,6 +2,7 @@
 
 import { CartMessage } from '@/app/components/cartMessage'
 import SendMessage from '@/app/components/sendMessage'
+import Spin from '@/app/components/spin'
 import { api } from '@/services/axios'
 
 import jwt from 'jsonwebtoken'
@@ -32,18 +33,22 @@ if (token) {
 }
 
 const messagesQueue: Message[] = []
-let userWebSocketId = ''
+let isOnlineSocket = false
 
-const socket = new WebSocket(`ws://localhost:3333/chat?username=${userId}`)
+const socket = new WebSocket(
+  `wss://chat-1-0-api.onrender.com/chat?username=${userId}`,
+)
 
-socket.onopen = () => {
+socket.onopen = async () => {
   socket.onmessage = (event) => {
     const eventData = JSON.parse(event.data)
 
     const { type, message } = eventData
 
     if (type === 'joined') {
-      userWebSocketId = message
+      if (message === userId) {
+        isOnlineSocket = true
+      }
     }
 
     if (type === 'submit') {
@@ -65,22 +70,16 @@ socket.onopen = () => {
 
 export function MessageList() {
   const [messages, setMessages] = useState<Message[]>([])
-  const [isOnline, setIsOnline] = useState(false)
 
   useEffect(() => {
     api.get('/messages').then((response) => {
       setMessages(response.data.messages.messages)
     })
-
-    if (userWebSocketId === userId) {
-      setIsOnline(true)
-    }
   }, [])
 
   useEffect(() => {
     const intervalId = setTimeout(function updateMessages() {
       if (messagesQueue.length >= 1) {
-        console.log('bateu aqui')
         setMessages((prevMessages) => prevMessages.concat(messagesQueue))
         messagesQueue.shift()
       }
@@ -91,7 +90,7 @@ export function MessageList() {
   }, [messages])
 
   return (
-    <div>
+    <div className="overflow-y-auto">
       <div className="w-full h-[70vh] flex flex-col gap-5 bg-slate-100 bg-opacity-70 rounded-lg p-8 justify-end overflow-y-auto">
         {messages.map((item) => {
           return (
@@ -104,16 +103,15 @@ export function MessageList() {
         })}
       </div>
       <SendMessage />
-      <div className="flex mt-2 gap-2">
-        {isOnline ? (
+      <div className="flex ml-2 mt-2 gap-2">
+        {isOnlineSocket ? (
           <>
             <Wifi />
             <p>Conectado.</p>
           </>
         ) : (
           <>
-            <WifiOff />
-            <p>Desconectado.</p>
+            <p>Conectando.</p>
           </>
         )}
       </div>
