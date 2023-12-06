@@ -38,23 +38,21 @@ export function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     const { 'chat.token': token } = parseCookies()
 
-    if (token) {
-      api
-        .get('/me')
-        .then((response) => {
+    const fetchData = async () => {
+      if (token) {
+        try {
+          const response = await api.get('/me')
           setUser(response.data.user)
-
-          if (user) {
-            router.push('/home')
-          }
-        })
-        .catch(() => {
+          router.push('/home')
+        } catch (error) {
           destroyCookie(undefined, 'chat.token')
           destroyCookie(undefined, 'chat.refreshToken')
-
           router.push('/')
-        })
+        }
+      }
     }
+
+    fetchData()
   }, [])
 
   async function signIn({

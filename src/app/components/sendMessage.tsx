@@ -31,12 +31,7 @@ const socket = new WebSocket(
 type MessageFormData = z.infer<typeof messageFormSchema>
 
 export default function SendMessage() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-    reset,
-  } = useForm<MessageFormData>({
+  const { register, handleSubmit, reset } = useForm<MessageFormData>({
     resolver: zodResolver(messageFormSchema),
   })
 

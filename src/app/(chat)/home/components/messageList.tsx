@@ -2,12 +2,11 @@
 
 import { CartMessage } from '@/app/components/cartMessage'
 import SendMessage from '@/app/components/sendMessage'
-import Spin from '@/app/components/spin'
 import { env } from '@/env'
 import { api } from '@/services/axios'
 
 import jwt from 'jsonwebtoken'
-import { Wifi, WifiOff } from 'lucide-react'
+import { Wifi } from 'lucide-react'
 import { parseCookies } from 'nookies'
 import { useEffect, useState } from 'react'
 

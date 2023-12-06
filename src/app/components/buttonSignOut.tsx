@@ -1,4 +1,12 @@
+'use client'
+
+import { AuthContext } from '@/context/AuthContext'
+import { LogOut } from 'lucide-react'
+import { useContext } from 'react'
+
 export default function ButtonSignOut() {
+  const { signOut } = useContext(AuthContext)
+
   return (
     <>
       <button
